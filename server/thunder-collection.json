@@ -1,0 +1,236 @@
+{
+  "clientName": "Thunder Client",
+  "collectionName": "Akatsuki's Draft API",
+  "collectionId": "akatsuki-draft-api-v1",
+  "dateExported": "2026-10-28",
+  "version": "1.1",
+  "folders": [
+    {
+      "id": "fld_auth",
+      "name": "1. Authentication",
+      "containerId": ""
+    },
+    {
+      "id": "fld_posts",
+      "name": "2. Post Management",
+      "containerId": ""
+    },
+    {
+      "id": "fld_admin",
+      "name": "3. Admin Moderation",
+      "containerId": ""
+    },
+    {
+      "id": "fld_ai",
+      "name": "4. OpenRouter AI",
+      "containerId": ""
+    },
+    {
+      "id": "fld_upload",
+      "name": "5. Media Uploads",
+      "containerId": ""
+    }
+  ],
+  "requests": [
+    {
+      "name": "Register User",
+      "method": "POST",
+      "url": "{{baseUrl}}/api/auth/register",
+      "containerId": "fld_auth",
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"name\": \"Itachi Uchiha\",\n  \"email\": \"itachi@akatsuki.io\",\n  \"password\": \"SharinganSecure123!\"\n}"
+      }
+    },
+    {
+      "name": "Login User",
+      "method": "POST",
+      "url": "{{baseUrl}}/api/auth/login",
+      "containerId": "fld_auth",
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"email\": \"itachi@akatsuki.io\",\n  \"password\": \"SharinganSecure123!\"\n}"
+      }
+    },
+    {
+      "name": "Get Current User Profile (/me)",
+      "method": "GET",
+      "url": "{{baseUrl}}/api/auth/me",
+      "containerId": "fld_auth",
+      "auth": {
+        "type": "bearer",
+        "bearer": "{{token}}"
+      }
+    },
+    {
+      "name": "Create Post / Draft",
+      "method": "POST",
+      "url": "{{baseUrl}}/api/posts",
+      "containerId": "fld_posts",
+      "auth": {
+        "type": "bearer",
+        "bearer": "{{token}}"
+      },
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"title\": \"Philosophy of True Peace\",\n  \"description\": \"An investigation into conflict and resolution\",\n  \"content\": \"Real peace cannot exist without understanding the true roots of conflict...\",\n  \"category\": \"Philosophy\",\n  \"status\": \"draft\"\n}"
+      }
+    },
+    {
+      "name": "Get Public Approved Posts (Paginated & Filtered)",
+      "method": "GET",
+      "url": "{{baseUrl}}/api/posts?page=1&limit=10&category=Philosophy&sort=latest",
+      "containerId": "fld_posts"
+    },
+    {
+      "name": "Get Single Approved Post",
+      "method": "GET",
+      "url": "{{baseUrl}}/api/posts/{{postId}}",
+      "containerId": "fld_posts"
+    },
+    {
+      "name": "Get My Posts (Drafts, Pending, Approved)",
+      "method": "GET",
+      "url": "{{baseUrl}}/api/posts/my-posts?status=draft",
+      "containerId": "fld_posts",
+      "auth": {
+        "type": "bearer",
+        "bearer": "{{token}}"
+      }
+    },
+    {
+      "name": "Update Owned Post",
+      "method": "PATCH",
+      "url": "{{baseUrl}}/api/posts/{{postId}}",
+      "containerId": "fld_posts",
+      "auth": {
+        "type": "bearer",
+        "bearer": "{{token}}"
+      },
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"title\": \"Updated Philosophy of Peace\",\n  \"content\": \"Updated revision for deeper clarity.\"\n}"
+      }
+    },
+    {
+      "name": "Submit Draft for Approval",
+      "method": "POST",
+      "url": "{{baseUrl}}/api/posts/{{postId}}/submit",
+      "containerId": "fld_posts",
+      "auth": {
+        "type": "bearer",
+        "bearer": "{{token}}"
+      }
+    },
+    {
+      "name": "Delete Post",
+      "method": "DELETE",
+      "url": "{{baseUrl}}/api/posts/{{postId}}",
+      "containerId": "fld_posts",
+      "auth": {
+        "type": "bearer",
+        "bearer": "{{token}}"
+      }
+    },
+    {
+      "name": "Admin - Get Pending Posts",
+      "method": "GET",
+      "url": "{{baseUrl}}/api/admin/posts/pending?page=1&limit=10",
+      "containerId": "fld_admin",
+      "auth": {
+        "type": "bearer",
+        "bearer": "{{adminToken}}"
+      }
+    },
+    {
+      "name": "Admin - Approve Post",
+      "method": "PATCH",
+      "url": "{{baseUrl}}/api/admin/posts/approve/{{postId}}",
+      "containerId": "fld_admin",
+      "auth": {
+        "type": "bearer",
+        "bearer": "{{adminToken}}"
+      }
+    },
+    {
+      "name": "Admin - Reject Post",
+      "method": "PATCH",
+      "url": "{{baseUrl}}/api/admin/posts/reject/{{postId}}",
+      "containerId": "fld_admin",
+      "auth": {
+        "type": "bearer",
+        "bearer": "{{adminToken}}"
+      },
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"rejectionReason\": \"Content requires citations and formatting improvements before publication.\"\n}"
+      }
+    },
+    {
+      "name": "AI - Improve Post Content (Creates New Draft)",
+      "method": "POST",
+      "url": "{{baseUrl}}/api/ai/improve/{{postId}}",
+      "containerId": "fld_ai",
+      "auth": {
+        "type": "bearer",
+        "bearer": "{{token}}"
+      }
+    },
+    {
+      "name": "Upload Post Image to Cloudinary",
+      "method": "POST",
+      "url": "{{baseUrl}}/api/upload/image",
+      "containerId": "fld_upload",
+      "auth": {
+        "type": "bearer",
+        "bearer": "{{token}}"
+      },
+      "body": {
+        "type": "formdata",
+        "form": [
+          {
+            "name": "image",
+            "type": "file"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Upload Document (PDF / DOCX)",
+      "method": "POST",
+      "url": "{{baseUrl}}/api/upload/document",
+      "containerId": "fld_upload",
+      "auth": {
+        "type": "bearer",
+        "bearer": "{{token}}"
+      },
+      "body": {
+        "type": "formdata",
+        "form": [
+          {
+            "name": "document",
+            "type": "file"
+          }
+        ]
+      }
+    }
+  ],
+  "variables": [
+    {
+      "name": "baseUrl",
+      "value": "http://localhost:5000"
+    },
+    {
+      "name": "token",
+      "value": ""
+    },
+    {
+      "name": "adminToken",
+      "value": ""
+    },
+    {
+      "name": "postId",
+      "value": ""
+    }
+  ]
+}

@@ -1,0 +1,104 @@
+@baseUrl = http://localhost:5000
+@userToken = {{loginUser.response.body.data.token}}
+@adminToken = {{loginAdmin.response.body.data.token}}
+@postId = {{createPost.response.body.data.post._id}}
+
+### 1. Server Health
+GET {{baseUrl}}/
+###
+GET {{baseUrl}}/api/health
+
+### 2. User Register
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "email": "tester.user@akatsuki.io",
+  "password": "UserTest@123",
+  "role": "user"
+}
+
+### 3. User Login
+# @name loginUser
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "tester.user@akatsuki.io",
+  "password": "UserTest@123"
+}
+
+### 4. Admin Register
+POST {{baseUrl}}/api/admin/register
+Content-Type: application/json
+
+{
+  "name": "Test Admin",
+  "email": "tester.admin@akatsuki.io",
+  "password": "AdminTest@123"
+}
+
+### 5. Admin Login (Separate)
+# @name loginAdmin
+POST {{baseUrl}}/api/admin/login
+Content-Type: application/json
+
+{
+  "email": "tester.admin@akatsuki.io",
+  "password": "AdminTest@123"
+}
+
+### 6. Negative Test: User attempting Admin Login (Expect 403)
+POST {{baseUrl}}/api/admin/login
+Content-Type: application/json
+
+{
+  "email": "tester.user@akatsuki.io",
+  "password": "UserTest@123"
+}
+
+### 7. Create Draft Post
+# @name createPost
+POST {{baseUrl}}/api/posts
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "title": "Mastering Node.js and MongoDB",
+  "description": "Comprehensive guide for developers building scalable backends.",
+  "content": "Node.js provides an event-driven runtime that scales efficiently with MongoDB document storage.",
+  "category": "Backend Development",
+  "status": "draft"
+}
+
+### 8. Submit Draft for Review
+POST {{baseUrl}}/api/posts/{{postId}}/submit
+Authorization: Bearer {{userToken}}
+
+### 9. Public Feed (Pending post should NOT appear)
+GET {{baseUrl}}/api/posts
+
+### 10. Admin Views Pending Posts
+GET {{baseUrl}}/api/admin/posts/pending
+Authorization: Bearer {{adminToken}}
+
+### 11. Admin Approves Post
+PATCH {{baseUrl}}/api/admin/posts/approve/{{postId}}
+Authorization: Bearer {{adminToken}}
+
+### 12. Public Feed (Approved post SHOULD now appear)
+GET {{baseUrl}}/api/posts
+
+### 13. AI Post Improvement
+POST {{baseUrl}}/api/ai/improve/{{postId}}
+Authorization: Bearer {{userToken}}
+
+### 14. Admin Rejects Post (Negative case demo)
+PATCH {{baseUrl}}/api/admin/posts/reject/{{postId}}
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "rejectionReason": "Please provide code examples before re-submitting."
+}

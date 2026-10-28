@@ -1,0 +1,11 @@
+{
+  "name": "akatsukis-draft-root",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "install:server": "npm --prefix server install",
+    "dev": "npm --prefix server run dev",
+    "start": "npm --prefix server start",
+    "seed:admin": "npm --prefix server run seed:admin"
+  }
+}
